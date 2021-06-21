@@ -382,7 +382,7 @@
         const playAudioContent = () => {
             // Убираем ивент с функции, чтобы она не вызвалась при последующих нажатиях
             window.removeEventListener('touchstart', playAudioContent);
-            audioInitialized = true;
+            audioInitialized = false;
         };
         // Вызываем функцию по нажатию на экран
         window.addEventListener('touchstart', playAudioContent)
