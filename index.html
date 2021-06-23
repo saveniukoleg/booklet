@@ -137,9 +137,9 @@
             // Массив файлов видео, если нет видео будет добавлена пустая строка
             const videoFiles = ["", "", "", "4.mp4"];
             // Массив файлов аудио, если нет аудио будет добавлена пустая строка
-            const audioFiles = ["", "", "", ""];
+            const audioFiles = ["", "", "3.mp3", ""];
             // Массив опций повтора аудио и видео контента, по дефолту для всех будет false
-            const repeatOptions = ["false", "false", "false", "true"];
+            const repeatOptions = ["false", "false", "true", "true"];
 
             // Создаём массив для всех маркеров
             const markerRoots = [];
@@ -381,11 +381,11 @@
         // Функция запуска всего аудио контента приложения
         const playAudioContent = () => {
             // Убираем ивент с функции, чтобы она не вызвалась при последующих нажатиях
-            window.removeEventListener('touchstart', playAudioContent);
-            audioInitialized = false;
+            window.removeEventListener('click', playAudioContent);
+            audioInitialized = true;
         };
         // Вызываем функцию по нажатию на экран
-        window.addEventListener('touchstart', playAudioContent)
+        window.addEventListener('click', playAudioContent)
 
     </script>
 
