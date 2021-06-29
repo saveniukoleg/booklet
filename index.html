@@ -4,20 +4,13 @@
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <title>AR project template</title>
     <!-- Добавляем необходимые библиотеки -->
-    <!-- Библиотека three.js -->
-    <script src='js/three.js'></script>
-    <script src='js/OBJLoader.js'></script>
-    <script src='js/MTLLoader.js'></script>
-    <!-- Библиотека tween.js -->
+    <script src="js/three.js"></script>
     <script src="js/tween.umd.js"></script>
-    <!-- Добавляем jsartookit -->
-    <script src="jsartoolkit5/artoolkit.min.js"></script>
-    <script src="jsartoolkit5/artoolkit.api.js"></script>
-    <!-- Добавляем threex.artoolkit -->
-    <script src="threex/threex-artoolkitsource.js"></script>
-    <script src="threex/threex-artoolkitcontext.js"></script>
-    <script src="threex/threex-arbasecontrols.js"></script>
-    <script src="threex/threex-armarkercontrols.js"></script>
+    <script src='loaders/GLTFLoader.js'></script>
+    <script src='loaders/MTLLoader.js'></script>
+    <script src='loaders/OBJLoader.js'></script>
+    <!-- Добавляем AR.js -->
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/three.js/build/ar-nft.js"></script>
 </head>
 
 <body style='margin : 0px; overflow: hidden; font-family: Monospace;'>
@@ -89,15 +82,6 @@
                 sourceType: 'webcam',
             });
 
-            // Функция перерендерит AR сцену под текущий размер canvas
-            function onResize() {
-                arToolkitSource.onResize()
-                arToolkitSource.copySizeTo(renderer.domElement)
-                if (arToolkitContext.arController !== null) {
-                    arToolkitSource.copySizeTo(arToolkitContext.arController.canvas)
-                }
-            }
-
             // Вызываем функцию при инициализации AR
             arToolkitSource.init(function onReady() {
                 onResize()
@@ -113,6 +97,7 @@
                 cameraParametersUrl: 'data/camera_para.dat',
                 detectionMode: 'mono_and_matrix',
                 matrixCodeType: "3x3",
+                patternRatio: 0.9,
                 maxDetectionRate: 60,
                 canvasWidth: 640,
                 canvasHeight: 480
@@ -322,6 +307,15 @@
             scene.add(mainContainer);
         }
 
+        // Функция перерендерит AR сцену под текущий размер canvas
+        function onResize() {
+            arToolkitSource.onResize()
+            arToolkitSource.copySizeTo(renderer.domElement)
+            if (arToolkitContext.arController !== null) {
+                arToolkitSource.copySizeTo(arToolkitContext.arController.canvas)
+            }
+        }
+
         function checkController() {
             if (controller) {
                 mainContainer.traverse((object) => {
@@ -351,9 +345,15 @@
             return box1.intersectsBox(box2);
         };
 
+        let resizedOnInit = 0;
+
         // Обновляем AR контент на каждый кадр
         function update() {
             if (arToolkitSource.ready !== false) {
+                if (resizedOnInit < 200) {
+                    resizedOnInit++;
+                    onResize()
+                }
                 arToolkitContext.update(arToolkitSource.domElement);
                 if (audioInitialized) {
                     if (barcodesID.length) {
