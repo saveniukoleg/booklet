@@ -307,6 +307,7 @@
 
         // Функция перерендерит AR сцену под текущий размер canvas
         function onResize() {
+            camera.projectionMatrix.copy(arToolkitContext.getProjectionMatrix());
             renderer.setSize(window.innerWidth, window.innerHeight)
             arToolkitSource.onResizeElement()
             arToolkitSource.copyElementSizeTo(renderer.domElement)
