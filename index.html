@@ -78,6 +78,12 @@
 
             arToolkitSource = new THREEx.ArToolkitSource({
                 sourceType: 'webcam',
+                // resolution of at which we initialize the source image
+                sourceWidth: window.innerWidth,
+                sourceHeight: window.innerHeight,
+                // resolution displayed for the source 
+                displayWidth: window.innerWidth,
+                displayHeight: window.innerHeight,
             });
 
             // Вызываем функцию при инициализации AR
@@ -312,7 +318,6 @@
             arToolkitSource.onResizeElement()
             arToolkitSource.copyElementSizeTo(renderer.domElement)
             if (arToolkitContext.arController !== null) {
-                console.log(arToolkitContext.arController.canvas)
                 arToolkitSource.copyElementSizeTo(arToolkitContext.arController.canvas)
             }
         }
@@ -351,11 +356,11 @@
         // Обновляем AR контент на каждый кадр
         function update() {
             if (arToolkitSource.ready !== false) {
+                arToolkitContext.update(arToolkitSource.domElement);
                 if (resizedOnInit < 200) {
                     resizedOnInit++;
                     onResize()
                 }
-                arToolkitContext.update(arToolkitSource.domElement);
                 if (audioInitialized) {
                     if (barcodesID.length) {
                         barcodesID.forEach((elem, index) => {
