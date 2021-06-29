@@ -52,8 +52,7 @@
             // Добавляем свет на сцену, иначе базовые материалы будут просто чёрными
             // т.к. им будет нечего отражать, обратитесь к документации библиотеки three.js, чтобы
             // прочитать о подробной работе класса Material
-            let ambientLight = new THREE.AmbientLight(0xcccccc, 0.5);
-            scene.add(ambientLight);
+            scene.add(new THREE.AmbientLight());
 
             // Добавляем камеру, которая будет позже переназначена на камеру смартфона
             camera = new THREE.Camera();
@@ -67,7 +66,6 @@
                 antialias: true,
                 alpha: true
             });
-            this.renderer.setPixelRatio(1);
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.domElement.style.position = 'absolute'
             renderer.domElement.style.top = '0px'
@@ -309,9 +307,11 @@
 
         // Функция перерендерит AR сцену под текущий размер canvas
         function onResize() {
+            renderer.setSize(window.innerWidth, window.innerHeight)
             arToolkitSource.onResizeElement()
             arToolkitSource.copyElementSizeTo(renderer.domElement)
             if (arToolkitContext.arController !== null) {
+                console.log(arToolkitContext.arController.canvas)
                 arToolkitSource.copyElementSizeTo(arToolkitContext.arController.canvas)
             }
         }
