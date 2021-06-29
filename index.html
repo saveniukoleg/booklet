@@ -67,8 +67,8 @@
                 antialias: true,
                 alpha: true
             });
-            renderer.setClearColor(new THREE.Color('lightgrey'), 0)
-            renderer.setSize(640, 480);
+            this.renderer.setPixelRatio(1);
+            renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.domElement.style.position = 'absolute'
             renderer.domElement.style.top = '0px'
             renderer.domElement.style.left = '0px'
@@ -99,8 +99,8 @@
                 matrixCodeType: "3x3",
                 patternRatio: 0.9,
                 maxDetectionRate: 60,
-                canvasWidth: 640,
-                canvasHeight: 480
+                canvasWidth: window.innerWidth,
+                canvasHeight: window.innerHeight
             });
 
             // Обновляем матрицу проекции камеры после окончания инициализации
@@ -309,10 +309,10 @@
 
         // Функция перерендерит AR сцену под текущий размер canvas
         function onResize() {
-            arToolkitSource.onResize()
-            arToolkitSource.copySizeTo(renderer.domElement)
+            arToolkitSource.onResizeElement()
+            arToolkitSource.copyElementSizeTo(renderer.domElement)
             if (arToolkitContext.arController !== null) {
-                arToolkitSource.copySizeTo(arToolkitContext.arController.canvas)
+                arToolkitSource.copyElementSizeTo(arToolkitContext.arController.canvas)
             }
         }
 
