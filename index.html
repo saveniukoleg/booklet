@@ -275,18 +275,25 @@
                             texture2.format = THREE.RGBFormat;
                             let material2 = new THREE.MeshBasicMaterial({ map: texture2 });
 
-                            let geometry2;
-                            if (texture2.image.naturalHeight < texture2.image.videoWidth) {
-                                geometry2 = new THREE.PlaneBufferGeometry(1 * (texture2.image.videoHeight / texture2.image.videoWidth), 1, 4, 4);
-                            } else {
-                                geometry2 = new THREE.PlaneBufferGeometry(1, 1 * (texture2.image.videoWidth / texture2.image.videoHeight), 4, 4);
-                            }
+                            contentPromises.push(new Promise((resolve) => {
+                                video.addEventListener('loadeddata', (vide) => {
+                                    let geometry2;
+                                    if (texture2.image.naturalHeight < texture2.image.videoWidth) {
+                                        geometry2 = new THREE.PlaneBufferGeometry(1 * (texture2.image.videoHeight / texture2.image.videoWidth), 1, 4, 4);
+                                    } else {
+                                        geometry2 = new THREE.PlaneBufferGeometry(1, 1 * (texture2.image.videoWidth / texture2.image.videoHeight), 4, 4);
+                                    }
 
-                            mesh2 = new THREE.Mesh(geometry2, material2);
-                            // Поворачиваем плоскость
-                            mesh2.rotation.x = -Math.PI / 2;
-                            // Добавляем плоскость в контейнер
-                            markerRoots[i].add(mesh2);
+                                    mesh2 = new THREE.Mesh(geometry2, material2);
+                                    // Поворачиваем плоскость
+                                    mesh2.rotation.x = -Math.PI / 2;
+                                    // Добавляем плоскость в контейнер
+                                    markerRoots[i].add(mesh2);
+                                    resolve(videoFiles[i]);
+                                });
+                            }).then(video => {
+                                console.log(`${video} loaded`)
+                            }))
                             break;
                         case 'controller':
                             controller = new THREE.Mesh(
