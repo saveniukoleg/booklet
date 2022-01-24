@@ -232,7 +232,7 @@
                                     let loader = new THREE.TextureLoader();
                                     loader.load(`${imageFiles[i]}`, (texture) => {
                                         let geometry1;
-                                        if (texture.image.naturalHeight > texture.image.naturalWidth) {
+                                        if (texture.image.naturalHeight < texture.image.naturalWidth) {
                                             geometry1 = new THREE.PlaneBufferGeometry(1 * (texture.image.naturalHeight / texture.image.naturalWidth), 1, 4, 4);
                                         } else {
                                             geometry1 = new THREE.PlaneBufferGeometry(1, 1 * (texture.image.naturalWidth / texture.image.naturalHeight), 4, 4);
@@ -276,7 +276,7 @@
                             let material2 = new THREE.MeshBasicMaterial({ map: texture2 });
 
                             let geometry2;
-                            if (texture2.image.naturalHeight > texture2.image.videoWidth) {
+                            if (texture2.image.naturalHeight < texture2.image.videoWidth) {
                                 geometry2 = new THREE.PlaneBufferGeometry(1 * (texture2.image.videoHeight / texture2.image.videoWidth), 1, 4, 4);
                             } else {
                                 geometry2 = new THREE.PlaneBufferGeometry(1, 1 * (texture2.image.videoWidth / texture2.image.videoHeight), 4, 4);
