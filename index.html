@@ -228,18 +228,23 @@
                         case 'image':
                             if (imageFiles[i]) {
                                 contentPromises.push(new Promise((resolve) => {
-                                    // Объявляем плоскость под изображение
-                                    let geometry1 = new THREE.PlaneBufferGeometry(1, 1, 4, 4);
                                     // Загружаем изображение
                                     let loader = new THREE.TextureLoader();
-                                    let texture = loader.load(`${imageFiles[i]}`, render);
-                                    let material1 = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
-                                    mesh1 = new THREE.Mesh(geometry1, material1);
-                                    // Поворачиваем плоскость
-                                    mesh1.rotation.x = -Math.PI / 2;
-                                    // Добавляем плоскость в контейнер
-                                    markerRoots[i].add(mesh1);
-                                    resolve(imageFiles[i])
+                                    loader.load(`${imageFiles[i]}`, (texture) => {
+                                        let geometry1;
+                                        if (texture.image.naturalHeight > texture.image.naturalWidth) {
+                                            geometry1 = new THREE.PlaneBufferGeometry(1 * (texture.image.naturalHeight / texture.image.naturalWidth), 1, 4, 4);
+                                        } else {
+                                            geometry1 = new THREE.PlaneBufferGeometry(1, 1 * (texture.image.naturalWidth / texture.image.naturalHeight), 4, 4);
+                                        }
+                                        let material1 = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
+                                        mesh1 = new THREE.Mesh(geometry1, material1);
+                                        // Поворачиваем плоскость
+                                        mesh1.rotation.x = -Math.PI / 2;
+                                        // Добавляем плоскость в контейнер
+                                        markerRoots[i].add(mesh1);
+                                        resolve(imageFiles[i])
+                                    });
                                 }).then(image => {
                                     console.log(`${image} loaded`)
                                 }))
@@ -247,8 +252,6 @@
                             break;
                         // Если контент под маркер это видео
                         case 'video':
-                            // Объявляем плоскость под видео
-                            let geometry2 = new THREE.PlaneBufferGeometry(2, 2, 4, 4);
                             // Объявляем и загружаем видео
                             let video = document.createElement('video');
                             video.playsInline = true;
@@ -271,6 +274,14 @@
                             texture2.magFilter = THREE.LinearFilter;
                             texture2.format = THREE.RGBFormat;
                             let material2 = new THREE.MeshBasicMaterial({ map: texture2 });
+
+                            let geometry2;
+                            if (texture2.image.naturalHeight > texture2.image.videoWidth) {
+                                geometry2 = new THREE.PlaneBufferGeometry(1 * (texture2.image.videoHeight / texture2.image.videoWidth), 1, 4, 4);
+                            } else {
+                                geometry2 = new THREE.PlaneBufferGeometry(1, 1 * (texture2.image.videoWidth / texture2.image.videoHeight), 4, 4);
+                            }
+
                             mesh2 = new THREE.Mesh(geometry2, material2);
                             // Поворачиваем плоскость
                             mesh2.rotation.x = -Math.PI / 2;
