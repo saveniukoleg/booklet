@@ -252,31 +252,30 @@
                             break;
                         // Если контент под маркер это видео
                         case 'video':
-                            // Объявляем и загружаем видео
-                            let video = document.createElement('video');
-                            video.playsInline = true;
-                            video.src = `${videoFiles[i]}`;
-                            // Устанавлием видео на автоповтор в зависимости от значения в массиве
-                            if (repeatOptions[i]) {
-                                video.addEventListener('ended', () => {
-                                    video.play();
-                                })
-                            }
-                            // Добавляем видео в массив аудио контента
-                            if (patternBarcode[i] === -1) {
-                                patternsSound.set(i, video);
-                            } else {
-                                barcodesSound.set(patternBarcode[i], video);
-                            }
-                            // Перенаправляем текстуру из видео в материал для плоскости
-                            let texture2 = new THREE.VideoTexture(video);
-                            texture2.minFilter = THREE.LinearFilter;
-                            texture2.magFilter = THREE.LinearFilter;
-                            texture2.format = THREE.RGBFormat;
-                            let material2 = new THREE.MeshBasicMaterial({ map: texture2 });
-
                             contentPromises.push(new Promise((resolve) => {
-                                video.addEventListener('loadeddata', (vide) => {
+                                // Объявляем и загружаем видео
+                                let video = document.createElement('video');
+                                video.playsInline = true;
+                                // Устанавлием видео на автоповтор в зависимости от значения в массиве
+                                if (repeatOptions[i]) {
+                                    video.addEventListener('ended', () => {
+                                        video.play();
+                                    })
+                                }
+                                // Добавляем видео в массив аудио контента
+                                if (patternBarcode[i] === -1) {
+                                    patternsSound.set(i, video);
+                                } else {
+                                    barcodesSound.set(patternBarcode[i], video);
+                                }
+                                // Перенаправляем текстуру из видео в материал для плоскости
+                                let texture2 = new THREE.VideoTexture(video);
+                                texture2.minFilter = THREE.LinearFilter;
+                                texture2.magFilter = THREE.LinearFilter;
+                                texture2.format = THREE.RGBFormat;
+                                let material2 = new THREE.MeshBasicMaterial({ map: texture2 });
+
+                                video.onloadeddata = () => {
                                     let geometry2;
                                     if (texture2.image.naturalHeight < texture2.image.videoWidth) {
                                         geometry2 = new THREE.PlaneBufferGeometry(1 * (texture2.image.videoHeight / texture2.image.videoWidth), 1, 4, 4);
@@ -290,7 +289,9 @@
                                     // Добавляем плоскость в контейнер
                                     markerRoots[i].add(mesh2);
                                     resolve(videoFiles[i]);
-                                });
+                                };
+
+                                video.src = `${videoFiles[i]}`;
                             }).then(video => {
                                 console.log(`${video} loaded`)
                             }))
