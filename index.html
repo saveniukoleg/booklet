@@ -233,9 +233,9 @@
                                     loader.load(`${imageFiles[i]}`, (texture) => {
                                         let geometry1;
                                         if (texture.image.naturalHeight < texture.image.naturalWidth) {
-                                            geometry1 = new THREE.PlaneBufferGeometry(1 * (texture.image.naturalHeight / texture.image.naturalWidth), 1, 4, 4);
+                                            geometry1 = new THREE.PlaneBufferGeometry(1 * (texture.image.naturalWidth / texture.image.naturalHeight), 1, 4, 4);
                                         } else {
-                                            geometry1 = new THREE.PlaneBufferGeometry(1, 1 * (texture.image.naturalWidth / texture.image.naturalHeight), 4, 4);
+                                            geometry1 = new THREE.PlaneBufferGeometry(1, 1 * (texture.image.naturalHeight / texture.image.naturalWidth), 4, 4);
                                         }
                                         let material1 = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
                                         mesh1 = new THREE.Mesh(geometry1, material1);
@@ -252,50 +252,34 @@
                             break;
                         // Если контент под маркер это видео
                         case 'video':
-                            contentPromises.push(new Promise((resolve) => {
-                                // Объявляем и загружаем видео
-                                let video = document.createElement('video');
-                                video.playsInline = true;
-                                // video.preload="metadata";
-                                // Устанавлием видео на автоповтор в зависимости от значения в массиве
-                                if (repeatOptions[i]) {
-                                    video.addEventListener('ended', () => {
-                                        video.play();
-                                    })
-                                }
-                                // Добавляем видео в массив аудио контента
-                                if (patternBarcode[i] === -1) {
-                                    patternsSound.set(i, video);
-                                } else {
-                                    barcodesSound.set(patternBarcode[i], video);
-                                }
-                                // Перенаправляем текстуру из видео в материал для плоскости
-                                let texture2 = new THREE.VideoTexture(video);
-                                texture2.minFilter = THREE.LinearFilter;
-                                texture2.magFilter = THREE.LinearFilter;
-                                texture2.format = THREE.RGBFormat;
-                                let material2 = new THREE.MeshBasicMaterial({ map: texture2 });
-
-                                video.addEventListener('loadeddata', () => {
-                                    let geometry2;
-                                    if (texture2.image.naturalHeight < texture2.image.videoWidth) {
-                                        geometry2 = new THREE.PlaneBufferGeometry(1 * (texture2.image.videoHeight / texture2.image.videoWidth), 1, 4, 4);
-                                    } else {
-                                        geometry2 = new THREE.PlaneBufferGeometry(1, 1 * (texture2.image.videoWidth / texture2.image.videoHeight), 4, 4);
-                                    }
-
-                                    mesh2 = new THREE.Mesh(geometry2, material2);
-                                    // Поворачиваем плоскость
-                                    mesh2.rotation.x = -Math.PI / 2;
-                                    // Добавляем плоскость в контейнер
-                                    markerRoots[i].add(mesh2);
-                                    resolve(videoFiles[i]);
-                                }, false);
-
-                                video.src = `${videoFiles[i]}`;
-                            }).then(video => {
-                                console.log(`${video} loaded`)
-                            }))
+                            // Объявляем плоскость под видео
+                            let geometry2 = new THREE.PlaneBufferGeometry(...[0.480, 0.360].map(el => el * 5), 4, 4);
+                            // Объявляем и загружаем видео
+                            let video = document.createElement('video');
+                            video.src = `${videoFiles[i]}`;
+                            // Устанавлием видео на автоповтор в зависимости от значения в массиве
+                            if (repeatOptions[i]) {
+                                video.addEventListener('ended', () => {
+                                    video.play();
+                                })
+                            }
+                            // Добавляем видео в массив аудио контента
+                            if (patternBarcode[i] === -1) {
+                                patternsSound.set(i, video);
+                            } else {
+                                barcodesSound.set(patternBarcode[i], video);
+                            }
+                            // Перенаправляем текстуру из видео в материал для плоскости
+                            let texture2 = new THREE.VideoTexture(video);
+                            texture2.minFilter = THREE.LinearFilter;
+                            texture2.magFilter = THREE.LinearFilter;
+                            texture2.format = THREE.RGBFormat;
+                            let material2 = new THREE.MeshBasicMaterial({ map: texture2 });
+                            mesh2 = new THREE.Mesh(geometry2, material2);
+                            // Поворачиваем плоскость
+                            mesh2.rotation.x = -Math.PI / 2;
+                            // Добавляем плоскость в контейнер
+                            markerRoots[i].add(mesh2);
                             break;
                         case 'controller':
                             controller = new THREE.Mesh(
