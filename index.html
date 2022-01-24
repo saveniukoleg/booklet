@@ -36,7 +36,7 @@
         transition: all .2s linear; display: none;">
         <div style="left: 50%; top: 50%; position: absolute; transform: translate(-50%, -50%); text-align: center; width: 130px; height: 165px;
             font-family: Arial, Helvetica, sans-serif; font-weight: 400; line-height: 1.5em; font-size: large;" class="spinner-wrapper">
-            <img style="width: 130px; height: 130px;" src="data/spin.gif" alt="spin gif">
+            <img style="width: 130px; height: 130px; pointer-events: none; user-select: none;" src="data/spin.gif" alt="spin gif">
             <br>
             Loading...
         </div>
@@ -256,6 +256,7 @@
                                 // Объявляем и загружаем видео
                                 let video = document.createElement('video');
                                 video.playsInline = true;
+                                // video.preload="metadata";
                                 // Устанавлием видео на автоповтор в зависимости от значения в массиве
                                 if (repeatOptions[i]) {
                                     video.addEventListener('ended', () => {
@@ -275,7 +276,7 @@
                                 texture2.format = THREE.RGBFormat;
                                 let material2 = new THREE.MeshBasicMaterial({ map: texture2 });
 
-                                video.onloadeddata = () => {
+                                video.addEventListener('loadeddata', () => {
                                     let geometry2;
                                     if (texture2.image.naturalHeight < texture2.image.videoWidth) {
                                         geometry2 = new THREE.PlaneBufferGeometry(1 * (texture2.image.videoHeight / texture2.image.videoWidth), 1, 4, 4);
@@ -289,7 +290,7 @@
                                     // Добавляем плоскость в контейнер
                                     markerRoots[i].add(mesh2);
                                     resolve(videoFiles[i]);
-                                };
+                                }, false);
 
                                 video.src = `${videoFiles[i]}`;
                             }).then(video => {
