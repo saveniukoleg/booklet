@@ -257,6 +257,7 @@
                             // Объявляем и загружаем видео
                             let video = document.createElement('video');
                             video.src = `${videoFiles[i]}`;
+                            video.playsInline = true;
                             // Устанавлием видео на автоповтор в зависимости от значения в массиве
                             if (repeatOptions[i]) {
                                 video.addEventListener('ended', () => {
