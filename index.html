@@ -84,7 +84,7 @@
                 // Додаємо світло на сцену, інакше базові матеріали будуть просто чорними.
                 // т.к. їм нема чого відображати, зверніться до документації бібліотеки three.js, щоб
                 // прочитати про докладну роботу класу Material
-                let ambientLight = new THREE.AmbientLight(0xcccccc, 0.5);
+                let ambientLight = new THREE.AmbientLight(0xffffff, 0.75);
                 scene.add(ambientLight);
 
                 // Додаємо камеру, яка буде пізніше перепризначена на камеру смартфона
@@ -158,17 +158,17 @@
                 // якщо замість баркоду був доданий .patt, на його місце масив додається -1
                 const patternBarcode = [-1, -1, -1, -1];
                 // Масив типів контенту кожного маркера, заповнюється значеннями: зображення, модель, відео
-                const modes = ["image", "image", "image", "video"];
+                const modes = ["image", "model", "model", "video"];
                 // Масив файлів моделей, якщо немає моделі буде додано порожній рядок
-                const modelFiles = ["", "", "", ""];
+                const modelFiles = ["", "matilda.gltf", "matilda.glb", ""];
                 // Масив файлів зображень, якщо немає зображення буде додано також порожній рядок
-                const imageFiles = ["1.jpg", "2.jpg", "3.jpg", ""];
+                const imageFiles = ["1.jpg", "", "", ""];
                 // Масив файлів відео, якщо немає відео буде ще один порожній рядок
                 const videoFiles = ["", "", "", "4.mp4"];
                 // Масив файлів аудіо, якщо немає аудіо буде так само порожній рядок
-                const audioFiles = ["1.mp3", "2.mp3", "3.mp3", ""];
+                const audioFiles = ["1.mp3", "", "", ""];
                 // Масив опцій повтору аудіо та відео контенту, по дефолту для всіх буде false
-                const repeatOptions = ["true", "true", "true", "true"];
+                const repeatOptions = ["true", "false", "false", "true"];
 
                 // Створюємо масив для всіх маркерів
                 const markerRoots = [];
@@ -201,24 +201,18 @@
                             function onProgress(xhr) { console.log((xhr.loaded / xhr.total * 100) + '% loaded'); }
                             function onError(xhr) { console.log('An error happened'); }
 
-                            // Завантажуємо 3D модель
                             contentPromises.push(new Promise((resolve) => {
-                                new THREE.MTLLoader()
-                                    .load(`${modelFiles[i]}.mtl`, function (materials) {
-                                        materials.preload();
-                                        new THREE.OBJLoader()
-                                            .setMaterials(materials)
-                                            .load(`${modelFiles[i]}.obj`, function (group) {
-                                                let mesh0 = group.children[0];
-                                                mesh0.material.side = THREE.DoubleSide;
-                                                mesh0.scale.set(0.05, 0.05, 0.05);
-                                                mesh0.rotation.set(Math.PI / -2, 0, 0);
-                                                markerRoots[i].add(mesh0);
-                                                resolve(modelFiles[i])
-                                            }, onProgress, onError);
-                                    });
+                                const test = new THREE.GLTF2Loader().load(`${modelFiles[i]}`, (response) => {
+                                    const scene = response.scene;
+                                    const object = scene.children[0];
+                                    // Іноді модель не можна побачити з кількох причин, найчастіше варто збільшити чи зменшити у 100 разів.
+                                    // Читайте: https://threejs.org/docs/index.html#manual/en/introduction/Loading-3D-models
+                                    object.scale.set(0.01, 0.01, 0.01)
+                                    markerRoots[i].add(object);
+                                    resolve(modelFiles[i])
+                                }, onProgress, onError)
                             }).then((file) => {
-                                console.log(`${file} loaded`)
+                                console.log(`File ${file} loaded`)
                             }))
                             break;
                         // Якщо контент під маркер це зображення
@@ -243,7 +237,7 @@
                                         resolve(imageFiles[i])
                                     });
                                 }).then(image => {
-                                    console.log(`${image} loaded`)
+                                    console.log(`File ${image} loaded`)
                                 }))
                             }
                             break;
@@ -322,7 +316,7 @@
                         }).then((sound) => {
                             sound.play()
                             sound.stop()
-                            console.log(`${sound.name} loaded`)
+                            console.log(`File ${sound.name} loaded`)
                         }))
                     }
                 }
