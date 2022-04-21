@@ -158,17 +158,17 @@
                 // якщо замість баркоду був доданий .patt, на його місце масив додається -1
                 const patternBarcode = [-1, -1, -1, -1];
                 // Масив типів контенту кожного маркера, заповнюється значеннями: зображення, модель, відео
-                const modes = ["image", "model", "model", "video"];
+                const modes = ["image", "image", "image", "video"];
                 // Масив файлів моделей, якщо немає моделі буде додано порожній рядок
-                const modelFiles = ["", "matilda.gltf", "matilda.glb", ""];
+                const modelFiles = ["", "", "", ""];
                 // Масив файлів зображень, якщо немає зображення буде додано також порожній рядок
-                const imageFiles = ["1.jpg", "", "", ""];
+                const imageFiles = ["1.jpg", "2.jpg", "3.jpg", ""];
                 // Масив файлів відео, якщо немає відео буде ще один порожній рядок
                 const videoFiles = ["", "", "", "4.mp4"];
                 // Масив файлів аудіо, якщо немає аудіо буде так само порожній рядок
-                const audioFiles = ["1.mp3", "", "", ""];
+                const audioFiles = ["1.mp3", "2.mp3", "3.mp3", ""];
                 // Масив опцій повтору аудіо та відео контенту, по дефолту для всіх буде false
-                const repeatOptions = ["true", "false", "false", "true"];
+                const repeatOptions = ["true", "true", "true", "true"];
 
                 // Створюємо масив для всіх маркерів
                 const markerRoots = [];
